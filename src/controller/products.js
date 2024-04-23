@@ -19,6 +19,7 @@ class ProductManager {
     }
 //guarda los producto en json
     async saveProducts() {
+        
         try {
             await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
         } catch (error) {
@@ -27,6 +28,8 @@ class ProductManager {
     }
 
     async addProduct(title, description, price, thumbnail, code, stock) {
+        await this.loadProducts();
+
         try {
             if (!(title && description && price && thumbnail && code && stock)) {
                 console.error('Todos los campos son obligatorios.');
@@ -51,8 +54,10 @@ class ProductManager {
             this.products.push(product);
             await this.saveProducts();
             console.log('Producto agregado:', product);
+            return product; 
         } catch (error) {
             console.error('Error al agregar producto:', error);
+            return null;
         }
     }
 
@@ -69,6 +74,7 @@ class ProductManager {
     }
 
     async updateProduct(id, updatedFields) {
+        await this.loadProducts();
         try {
             const index = this.products.findIndex(p => p.id === id);
             if (index === -1) {
@@ -85,6 +91,7 @@ class ProductManager {
     }
 
     async deleteProduct(id) {
+        await this.loadProducts();
         try {
             const index = this.products.findIndex(p => p.id === id);
             if (index === -1) {
@@ -109,9 +116,8 @@ class ProductManager {
 
 // Pruebas
 (async () => {
-    const manager = new ProductManager('Productos.json');
+    const manager = new ProductManager('./src/data/Productos.json');
 
-    console.log(manager.getProducts()); // []
 
     await manager.addProduct('producto prueba 1', 'Este es un producto prueba1', 100, 'img1.jpg', 'abc123', 20);
     await manager.addProduct('producto prueba 2', 'Este es un producto prueba2', 200, 'img2.jpg', 'def456', 21);

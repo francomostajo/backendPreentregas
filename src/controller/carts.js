@@ -1,45 +1,45 @@
 const fs = require('fs').promises;
 
-class TrolleyManager {
+class CartManager {
     constructor(path) {
         this.path = path;
-        this.trolleys = [];
+        this.carts = [];
         this.lastId = 0;
-        this.loadTrolleys();
+        this.loadCarts();
     }
 //carga el json
-    async loadTrolleys() {
+    async loadCarts() {
         try {
             const data = await fs.readFile(this.path, 'utf8');
-            this.trolleys = JSON.parse(data);
-            this.lastId = this.trolleys.length > 0 ? this.trolleys[this.trolleys.length - 1].id : 0;
+            this.carts = JSON.parse(data);
+            this.lastId = this.carts.length > 0 ? this.carts[this.carts.length - 1].id : 0;
         } catch (error) {
             console.error('Error al cargar productos:', error);
         }
     }
 //guarda los producto en json
-    async saveTrolleys() {
+    async saveCarts() {
         try {
-            await fs.writeFile(this.path, JSON.stringify(this.trolleys, null, 2));
+            await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2));
         } catch (error) {
             console.error('Error al guardar productos:', error);
         }
     }
 
-    async addTrolley(title, description, price, thumbnail, code, stock) {
+    async addCart(title, description, price, thumbnail, code, stock) {
         try {
             if (!(title && description && price && thumbnail && code && stock)) {
                 console.error('Todos los campos son obligatorios.');
                 return;
             }
 
-            if (this.trolleys.some(p => p.code === code)) {
+            if (this.carts.some(p => p.code === code)) {
                 console.error('El código de producto ya existe.');
                 return;
             }
 
             this.lastId++;
-            const trolley = {
+            const cart = {
                 id: this.lastId,
                 title,
                 description,
@@ -48,54 +48,54 @@ class TrolleyManager {
                 code,
                 stock
             };
-            this.trolleys.push(trolley);
+            this.carts.push(cart);
             await this.saveProducts();
-            console.log('Producto agregado:', trolley);
+            console.log('Producto agregado:', cart);
         } catch (error) {
             console.error('Error al agregar producto:', error);
         }
     }
 
-    getTrolleys() {
-        return this.trolleys;
+    getCarts() {
+        return this.carts;
     }
 
-    getTrolleyById(id) {
-        const trolley = this.trolleys.find(p => p.id === id);
-        if (!trolley) {
+    getCartById(id) {
+        const cart = this.carts.find(p => p.id === id);
+        if (!cart) {
             console.error('Producto no encontrado.');
         }
-        return trolley;
+        return cart;
     }
 
-    async updateTrolley(id, updatedFields) {
+    async updateCart(id, updatedFields) {
         try {
-            const index = this.trolleys.findIndex(p => p.id === id);
+            const index = this.carts.findIndex(p => p.id === id);
             if (index === -1) {
                 console.error('Producto no encontrado.');
                 return;
             }
 
-            this.trolleys[index] = { ...this.trolleys[index], ...updatedFields };
+            this.carts[index] = { ...this.carts[index], ...updatedFields };
             await this.saveProducts();
-            console.log('Producto actualizado:', this.trolleys[index]);
+            console.log('Producto actualizado:', this.carts[index]);
         } catch (error) {
             console.error('Error al actualizar producto:', error);
         }
     }
 
-    async deleteTrolley(id) {
+    async deleteCart(id) {
         try {
-            const index = this.trolleys.findIndex(p => p.id === id);
+            const index = this.carts.findIndex(p => p.id === id);
             if (index === -1) {
                 console.error('Producto no encontrado.');
                 return;
             }
     
-            this.trolleys.splice(index, 1);
+            this.carts.splice(index, 1);
     
             // Reorganizar los IDs para que sean secuenciales
-            this.trolleys.forEach((product, index) => {
+            this.carts.forEach((product, index) => {
                 product.id = index + 1;
             });
     
@@ -109,7 +109,7 @@ class TrolleyManager {
 
 // Pruebas
 (async () => {
-    const manager = new TrolleyManager('Carritos.json');
+    const manager = new CartManager('Carritos.json');
 
     console.log(manager.getTrolleys()); // []
 
@@ -129,7 +129,7 @@ class TrolleyManager {
     await manager.updateProduct(1, { price: 250 });
     await manager.deleteProduct(2); */ // Eliminar producto ocultar porque al eliminar un producto, se elimina el id por lo que pasa el id 3 a ser id2 y se eliminan 
 
-    console.log(manager.getTrolleys());
+    console.log(manager.getCarts());
 })();
 
-module.exports = TrolleyManager;
+module.exports = CartManager;
