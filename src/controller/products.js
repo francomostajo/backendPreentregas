@@ -37,7 +37,7 @@ class ProductManager {
             }
 
             if (this.products.some(p => p.code === code)) {
-                console.error('El código de producto ya existe.');
+                /* console.error('El código de producto ya existe.'); */
                 return;
             }
 

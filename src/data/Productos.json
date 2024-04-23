@@ -88,14 +88,5 @@
     "thumbnail": "img10.jph",
     "code": "abc1210",
     "stock": 29
-  },
-  {
-    "id": 11,
-    "title": "Nuevo producto",
-    "description": "Descripción del nuevo producto",
-    "price": 100,
-    "thumbnail": "imagen.jpg",
-    "code": "ABC123",
-    "stock": 10
   }
 ]

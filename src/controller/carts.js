@@ -7,129 +7,92 @@ class CartManager {
         this.lastId = 0;
         this.loadCarts();
     }
-//carga el json
+
     async loadCarts() {
         try {
             const data = await fs.readFile(this.path, 'utf8');
             this.carts = JSON.parse(data);
             this.lastId = this.carts.length > 0 ? this.carts[this.carts.length - 1].id : 0;
         } catch (error) {
-            console.error('Error al cargar productos:', error);
+            console.error('Error al cargar carritos:', error);
         }
     }
-//guarda los producto en json
+
     async saveCarts() {
         try {
             await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2));
         } catch (error) {
-            console.error('Error al guardar productos:', error);
+            console.error('Error al guardar carritos:', error);
         }
     }
 
-    async addCart(title, description, price, thumbnail, code, stock) {
+    async createCart() {
         try {
-            if (!(title && description && price && thumbnail && code && stock)) {
-                console.error('Todos los campos son obligatorios.');
-                return;
-            }
-
-            if (this.carts.some(p => p.code === code)) {
-                console.error('El código de producto ya existe.');
-                return;
-            }
-
             this.lastId++;
-            const cart = {
+            const newCart = {
                 id: this.lastId,
-                title,
-                description,
-                price,
-                thumbnail,
-                code,
-                stock
+                products: products
             };
-            this.carts.push(cart);
-            await this.saveProducts();
-            console.log('Producto agregado:', cart);
+            this.carts.push(newCart);
+            await this.saveCarts();
+            console.log('Nuevo carrito creado:', newCart);
+            return newCart;
         } catch (error) {
-            console.error('Error al agregar producto:', error);
+            console.error('Error al crear carrito:', error);
+            return null;
         }
     }
 
-    getCarts() {
-        return this.carts;
-    }
-
-    getCartById(id) {
-        const cart = this.carts.find(p => p.id === id);
+    async getCartById(id) {
+        const cart = this.carts.find(c => c.id === id);
         if (!cart) {
-            console.error('Producto no encontrado.');
+            console.error('Carrito no encontrado.');
         }
         return cart;
     }
 
-    async updateCart(id, updatedFields) {
+    async addProductToCart(cartId, productId, quantity) {
+        await this.loadCarts();
         try {
-            const index = this.carts.findIndex(p => p.id === id);
-            if (index === -1) {
-                console.error('Producto no encontrado.');
-                return;
+            const cart = await this.getCartById(cartId);
+            if (!cart) {
+                console.error('Carrito no encontrado.');
+                return null;
             }
 
-            this.carts[index] = { ...this.carts[index], ...updatedFields };
-            await this.saveProducts();
-            console.log('Producto actualizado:', this.carts[index]);
-        } catch (error) {
-            console.error('Error al actualizar producto:', error);
-        }
-    }
-
-    async deleteCart(id) {
-        try {
-            const index = this.carts.findIndex(p => p.id === id);
-            if (index === -1) {
-                console.error('Producto no encontrado.');
-                return;
+            const existingProduct = cart.products.find(p => p.id === productId);
+            if (existingProduct) {
+                existingProduct.quantity += quantity;
+            } else {
+                cart.products.push({ id: productId, quantity });
             }
-    
-            this.carts.splice(index, 1);
-    
-            // Reorganizar los IDs para que sean secuenciales
-            this.carts.forEach((product, index) => {
-                product.id = index + 1;
-            });
-    
-            await this.saveProducts();
-            console.log('Producto eliminado.');
+
+            await this.saveCarts();
+            console.log('Producto agregado al carrito:', cart);
+            return cart;
         } catch (error) {
-            console.error('Error al eliminar producto:', error);
+            console.error('Error al agregar producto al carrito:', error);
+            return null;
         }
     }
 }
 
-// Pruebas
+// Crear instancia de CartManager para el carrito
+
+
+// Agregar productos al carrito
 (async () => {
-    const manager = new CartManager('Carritos.json');
+    const cartManager = new CartManager('./src/data/Carritos.json');
+    await cartManager.createCart(); // Crear un nuevo carrito con ID 1
 
-    console.log(manager.getTrolleys()); // []
+    // Agregar productos al carrito con ID 1
+    await cartManager.addProductToCart(1, 1, 1); // Agregar producto con ID 1 y cantidad 1
+    await cartManager.addProductToCart(1, 2, 2); // Agregar producto con ID 2 y cantidad 2
+    await cartManager.addProductToCart(1, 3, 3); // Agregar producto con ID 3 y cantidad 3
 
-    await manager.addProduct('producto prueba 1', 'Este es un producto prueba1', 100, 'img1.jpg', 'abc123', 20);
-    await manager.addProduct('producto prueba 2', 'Este es un producto prueba2', 200, 'img2.jpg', 'def456', 21);
-    await manager.addProduct('producto prueba 3', 'Este es un producto prueba3', 300, 'img3.jpg', 'ghi789', 32);
-    await manager.addProduct('producto prueba 4', 'Este es un producto prueba4', 400, 'img4.jph', 'abc124', 23);
-    await manager.addProduct('producto prueba 5', 'Este es un producto prueba5', 500, 'img5.jph', 'abc125', 24);
-    await manager.addProduct('producto prueba 6', 'Este es un producto prueba6', 600, 'img6.jph', 'abc126', 25);
-    await manager.addProduct('producto prueba 7', 'Este es un producto prueba7', 700, 'img7.jph', 'abc127', 26);
-    await manager.addProduct('producto prueba 8', 'Este es un producto prueba8', 800, 'img8.jph', 'abc128', 27);
-    await manager.addProduct('producto prueba 9', 'Este es un producto prueba9', 900, 'img9.jph', 'abc129', 28);
-    await manager.addProduct('producto prueba 10', 'Este es un producto prueba10', 1000, 'img10.jph', 'abc1210', 29);
-/*     console.log(manager.getProductById(3));
-    console.log(manager.getProductById(5)); // Producto no encontrado.
-
-    await manager.updateProduct(1, { price: 250 });
-    await manager.deleteProduct(2); */ // Eliminar producto ocultar porque al eliminar un producto, se elimina el id por lo que pasa el id 3 a ser id2 y se eliminan 
-
-    console.log(manager.getCarts());
+    // Obtener el carrito por su ID (1)
+    const cart = await cartManager.getCartById(1);
+    console.log('Carrito:', cart);
 })();
 
 module.exports = CartManager;
