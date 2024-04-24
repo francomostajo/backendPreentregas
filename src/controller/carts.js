@@ -31,7 +31,7 @@ class CartManager {
             this.lastId++;
             const newCart = {
                 id: this.lastId,
-                products: products
+                products: []
             };
             this.carts.push(newCart);
             await this.saveCarts();
@@ -59,7 +59,9 @@ class CartManager {
                 console.error('Carrito no encontrado.');
                 return null;
             }
-
+            if (!cart.products) {
+                cart.products = []; 
+            }
             const existingProduct = cart.products.find(p => p.id === productId);
             if (existingProduct) {
                 existingProduct.quantity += quantity;

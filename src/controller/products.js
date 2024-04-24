@@ -27,11 +27,12 @@ class ProductManager {
         }
     }
 
-    async addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct( title, category, description, price, thumbnail, code, stock) {
         await this.loadProducts();
+        
 
         try {
-            if (!(title && description && price && thumbnail && code && stock)) {
+            if (!(title && category && description && price && thumbnail && code && stock)) {
                 console.error('Todos los campos son obligatorios.');
                 return;
             }
@@ -49,7 +50,9 @@ class ProductManager {
                 price,
                 thumbnail,
                 code,
-                stock
+                stock,
+                category,
+                status: true
             };
             this.products.push(product);
             await this.saveProducts();
@@ -119,16 +122,16 @@ class ProductManager {
     const manager = new ProductManager('./src/data/Productos.json');
 
 
-    await manager.addProduct('producto prueba 1', 'Este es un producto prueba1', 100, 'img1.jpg', 'abc123', 20);
-    await manager.addProduct('producto prueba 2', 'Este es un producto prueba2', 200, 'img2.jpg', 'def456', 21);
-    await manager.addProduct('producto prueba 3', 'Este es un producto prueba3', 300, 'img3.jpg', 'ghi789', 32);
-    await manager.addProduct('producto prueba 4', 'Este es un producto prueba4', 400, 'img4.jph', 'abc124', 23);
-    await manager.addProduct('producto prueba 5', 'Este es un producto prueba5', 500, 'img5.jph', 'abc125', 24);
-    await manager.addProduct('producto prueba 6', 'Este es un producto prueba6', 600, 'img6.jph', 'abc126', 25);
-    await manager.addProduct('producto prueba 7', 'Este es un producto prueba7', 700, 'img7.jph', 'abc127', 26);
-    await manager.addProduct('producto prueba 8', 'Este es un producto prueba8', 800, 'img8.jph', 'abc128', 27);
-    await manager.addProduct('producto prueba 9', 'Este es un producto prueba9', 900, 'img9.jph', 'abc129', 28);
-    await manager.addProduct('producto prueba 10', 'Este es un producto prueba10', 1000, 'img10.jph', 'abc1210', 29);
+    await manager.addProduct('producto prueba 1',  'A', 'Este es un producto prueba1', 100, 'img1.jpg', 'abc123', 20);
+    await manager.addProduct('producto prueba 2',  'B', 'Este es un producto prueba2', 200, 'img2.jpg', 'def456', 21);
+    await manager.addProduct('producto prueba 3',  'C', 'Este es un producto prueba3', 300, 'img3.jpg', 'ghi789', 32);
+    await manager.addProduct('producto prueba 4',  'D', 'Este es un producto prueba4', 400, 'img4.jph', 'abc124', 23);
+    await manager.addProduct('producto prueba 5',  'E', 'Este es un producto prueba5', 500, 'img5.jph', 'abc125', 24);
+    await manager.addProduct('producto prueba 6',  'F', 'Este es un producto prueba6', 600, 'img6.jph', 'abc126', 25);
+    await manager.addProduct('producto prueba 7',  'G', 'Este es un producto prueba7', 700, 'img7.jph', 'abc127', 26);
+    await manager.addProduct('producto prueba 8',  'F', 'Este es un producto prueba8', 800, 'img8.jph', 'abc128', 27);
+    await manager.addProduct('producto prueba 9',  'I', 'Este es un producto prueba9', 900, 'img9.jph', 'abc129', 28);
+    await manager.addProduct('producto prueba 10', 'J',  'Este es un producto prueba10', 1000, 'img10.jph', 'abc1210', 29);
 /*     console.log(manager.getProductById(3));
     console.log(manager.getProductById(5)); // Producto no encontrado.
 
