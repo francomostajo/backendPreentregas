@@ -108,5 +108,16 @@
     "stock": 29,
     "category": "J",
     "status": true
+  },
+  {
+    "id": 11,
+    "title": "Nuevo producto",
+    "description": "Descripción del nuevo producto",
+    "price": 100,
+    "thumbnail": "imagen.jpg",
+    "code": "ABC123",
+    "stock": 10,
+    "category": "F",
+    "status": true
   }
 ]

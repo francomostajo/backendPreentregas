@@ -85,14 +85,12 @@ class CartManager {
 // Agregar productos al carrito
 (async () => {
     const cartManager = new CartManager('./src/data/Carritos.json');
-    await cartManager.createCart(); // Crear un nuevo carrito con ID 1
+    await cartManager.createCart(1); 
 
-    // Agregar productos al carrito con ID 1
-    await cartManager.addProductToCart(1, 1, 1); // Agregar producto con ID 1 y cantidad 1
-    await cartManager.addProductToCart(1, 2, 2); // Agregar producto con ID 2 y cantidad 2
-    await cartManager.addProductToCart(1, 3, 3); // Agregar producto con ID 3 y cantidad 3
+    await cartManager.addProductToCart(1, 1, 1); 
+    await cartManager.addProductToCart(1, 2, 2); 
+    await cartManager.addProductToCart(1, 3, 3); 
 
-    // Obtener el carrito por su ID (1)
     const cart = await cartManager.getCartById(1);
     console.log('Carrito:', cart);
 })();

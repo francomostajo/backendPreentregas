@@ -22,8 +22,8 @@ router.get('/:pid', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { title, description, price, thumbnail, code, stock } = req.body;
-    const product = await manager.addProduct(title, description, price, thumbnail, code, stock);
+    const { title, category, description, price, thumbnail, code, stock } = req.body;
+    const product = await manager.addProduct(title, category, description, price, thumbnail, code, stock);
     if (!product) {
         return res.status(400).json({ message: 'No se pudo agregar el producto' });
     }
